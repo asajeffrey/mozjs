@@ -26,3 +26,6 @@ path = "lib.rs"
 [dependencies]
 libc = "0.2"
 libz-sys = "1.0"
+
+[build-dependencies]
+bindgen = "0.36"
