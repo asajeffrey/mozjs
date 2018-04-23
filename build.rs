@@ -91,6 +91,7 @@ fn build_jsapi_bindings() {
         .rustified_enum(".*")
         .enable_cxx_namespaces()
         .with_codegen_config(bindgen::CodegenConfig::all())
+        .rustfmt_bindings(true)
         .clang_arg("-I").clang_arg(out.join("dist/include").to_str().expect("UTF-8"))
         .clang_arg("-x").clang_arg("c++")
         .clang_arg("-std=gnu++14")
@@ -172,6 +173,7 @@ const WHITELIST_TYPES: &'static [&'static str] = &[
     "JSAutoStructuredCloneBuffer",
     "JSClass",
     "JSClassOps",
+    "JS::CompileOptions",
     "JSContext",
     "JSErrNum",
     "JSErrorCallback",
@@ -192,6 +194,7 @@ const WHITELIST_TYPES: &'static [&'static str] = &[
     "JSJitMethodCallArgs",
     "JSJitSetterCallArgs",
     "JSNativeWrapper",
+    "JS::OwningCompileOptions",
     "JSPropertySpec",
     "JSProtoKey",
     "JSObject",
@@ -465,8 +468,6 @@ const WHITELIST_FUNCTIONS: &'static [&'static str] = &[
     "js::UnwrapUint8ClampedArray",
     "js::UseInternalJobQueues",
     "JS_ValueToFunction",
-    "JS_NewPersistentRootedObject",
-    "JS_GetPersistentRootedHandle",
 ];
 
 /// Types that should be treated as an opaque blob of bytes whenever they show
