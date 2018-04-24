@@ -51,6 +51,7 @@ fn build_jsapi() {
     }
 
     let result = cmd.args(&["-R", "-f", "makefile.cargo"])
+        .env("CXXFLAGS", "-fkeep-inline-functions")
         .stdout(Stdio::inherit())
         .stderr(Stdio::inherit())
         .status()
