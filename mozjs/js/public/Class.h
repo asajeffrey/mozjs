@@ -906,6 +906,7 @@ struct Class
     JSFunToStringOp  getOpsFunToString()    const { return oOps ? oOps->funToString    : nullptr; }
 };
 
+/*
 static_assert(offsetof(JSClassOps, addProperty) == offsetof(ClassOps, addProperty),
               "ClassOps and JSClassOps must be consistent");
 static_assert(offsetof(JSClassOps, delProperty) == offsetof(ClassOps, delProperty),
@@ -941,6 +942,7 @@ static_assert(offsetof(JSClass, cOps) == offsetof(Class, cOps),
               "Class and JSClass must be consistent");
 static_assert(sizeof(JSClass) == sizeof(Class),
               "Class and JSClass must be consistent");
+*/
 
 static MOZ_ALWAYS_INLINE const JSClass*
 Jsvalify(const Class* c)

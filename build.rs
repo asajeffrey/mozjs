@@ -6,6 +6,7 @@ extern crate bindgen;
 
 use std::env;
 use std::ffi::{OsStr, OsString};
+use std::path::PathBuf;
 use std::process::{Command, Stdio};
 
 fn main() {
@@ -96,6 +97,7 @@ fn build_jsapi_bindings() {
         .clang_arg("-x").clang_arg("c++")
         .clang_arg("-std=gnu++14")
         .clang_arg("-fno-sized-deallocation")
+	.clang_arg("-fms-compatibility")
         .clang_arg("-DRUST_BINDGEN");
 
     if cfg!(feature = "debugmozjs") {

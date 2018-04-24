@@ -5,7 +5,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 #include <stdint.h>
-#ifndef _MSC_VER
+#ifdef _MSC_VER
+#include <windows.h>
+#else
 #include <unistd.h>
 #endif
 
