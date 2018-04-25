@@ -85,6 +85,7 @@ fn build_jsapi_bindings() {
     let mut builder = bindgen::builder()
         .rust_target(bindgen::RustTarget::Stable_1_19)
         .header("./etc/wrapper.hpp")
+        .raw_line(include_str!("./etc/wrapper.rs"))
         // Translate every enum with the "rustified enum" strategy. We should
         // investigate switching to the "constified module" strategy, which has
         // similar ergonomics but avoids some potential Rust UB footguns.
@@ -142,6 +143,7 @@ fn build_jsapi_bindings() {
         .expect("Should write bindings to file OK");
 
     println!("cargo:rerun-if-changed=etc/wrapper.hpp");
+    println!("cargo:rerun-if-changed=etc/wrapper.rs");
 }
 
 /// JSAPI types for which we should implement `Sync`.
@@ -223,6 +225,7 @@ const WHITELIST_TYPES: &'static [&'static str] = &[
     "JS::NativeImpl",
     "js::ObjectOps",
     "JS::ObjectOpResult",
+    "js::PerThreadDataFriendFields",
     "JS::PromiseState",
     "JS::PropertyDescriptor",
     "JS::Rooted",
@@ -240,6 +243,7 @@ const WHITELIST_TYPES: &'static [&'static str] = &[
     "JS::SymbolCode",
     "JS::TraceKind",
     "JS::TransferableOwnership",
+    "JS::Type",
     "JS::Value",
     "JS::UninitializedValue",
     "JS::WarningReporter",
@@ -253,6 +257,7 @@ const WHITELIST_VARS: &'static [&'static str] = &[
     "JSCLASS_.*",
     "JSFUN_.*",
     "JSID_TYPE_VOID",
+    "JSID_VOID",
     "JSITER_.*",
     "JSPROP_.*",
     "JS::FalseHandleValue",
@@ -408,10 +413,12 @@ const WHITELIST_FUNCTIONS: &'static [&'static str] = &[
     "JS_RemoveExtraGCRootsTracer",
     "js::RemoveRawValueRoot",
     "JS_ReportErrorASCII",
+    "JS_ReportErrorNumber",
     "JS_ReportErrorNumberUTF8",
     "JS_RequestInterruptCallback",
     "JS_ResolveStandardClass",
     "js::RunJobs",
+    "JS::RuntimeOptionsRef",
     "JS_SameValue",
     "js::SetDOMCallbacks",
     "js::SetDOMProxyInformation",
@@ -458,6 +465,7 @@ const WHITELIST_FUNCTIONS: &'static [&'static str] = &[
     "js::ToUint16Slow",
     "js::ToUint32Slow",
     "js::ToUint64Slow",
+    "js::ToWindowProxyIfWindow",
     "JS_TransplantObject",
     "js::detail::ToWindowProxyIfWindowSlow",
     "JS::UnhideScriptedCaller",
