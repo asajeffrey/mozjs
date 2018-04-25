@@ -97,7 +97,7 @@ fn main() {
         rval_handle.ptr = &mut rval;
 
         assert!(JS::Evaluate2(cx, &options._base, &script[0], script.len(), rval_handle));
-        assert!(JS::Value_toInt32(&rval) == 2);
+        assert!(rval.toInt32() == 2);
 
         // Shut everything down.
         JS_LeaveCompartment(cx, compartment);

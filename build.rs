@@ -85,8 +85,6 @@ fn build_jsapi_bindings() {
     let mut builder = bindgen::builder()
         .rust_target(bindgen::RustTarget::Stable_1_19)
         .header("./etc/wrapper.hpp")
-        // TODO(ajeffrey): do we need these?
-        // .raw_line("pub use self::root::*;")
         // Translate every enum with the "rustified enum" strategy. We should
         // investigate switching to the "constified module" strategy, which has
         // similar ergonomics but avoids some potential Rust UB footguns.
@@ -94,6 +92,7 @@ fn build_jsapi_bindings() {
         .enable_cxx_namespaces()
         .with_codegen_config(bindgen::CodegenConfig::all())
         .rustfmt_bindings(true)
+	.generate_inline_functions(true)
         .clang_arg("-I").clang_arg(out.join("dist/include").to_str().expect("UTF-8"))
         .clang_arg("-x").clang_arg("c++")
         .clang_arg("-std=gnu++14")
