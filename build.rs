@@ -97,7 +97,6 @@ fn build_jsapi_bindings() {
         .clang_arg("-x").clang_arg("c++")
         .clang_arg("-std=gnu++14")
         .clang_arg("-fno-sized-deallocation")
-	.clang_arg("-fms-compatibility")
         .clang_arg("-DRUST_BINDGEN");
 
     if cfg!(feature = "debugmozjs") {
@@ -105,6 +104,11 @@ fn build_jsapi_bindings() {
             .clang_arg("-DJS_GC_ZEAL")
             .clang_arg("-DDEBUG")
             .clang_arg("-DJS_DEBUG");
+    }
+
+    if cfg!(windows) {
+        builder = builder
+	    .clang_arg("-fms-compatibility");
     }
 
     for ty in UNSAFE_IMPL_SYNC_TYPES {
