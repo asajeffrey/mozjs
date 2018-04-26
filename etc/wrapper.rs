@@ -235,3 +235,95 @@ impl JSNativeWrapper {
         op.is_none() && info.is_null()
     }
 }
+
+impl<T> JS::Rooted<T> {
+    pub fn new_unrooted() -> JS::Rooted<T> {
+        JS::Rooted {
+            stack: ::std::ptr::null_mut(),
+            prev: ::std::ptr::null_mut(),
+            ptr: unsafe { ::std::mem::zeroed() },
+            _phantom_0: ::std::marker::PhantomData,
+        }
+    }
+
+    pub unsafe fn add_to_root_stack(&mut self, cx: *mut JSContext) where T: RootingKind {
+        let ctxfriend = cx as *mut js::ContextFriendFields;
+        let zone = (*ctxfriend).zone_;
+        let roots: *mut _ = if !zone.is_null() {
+            let shadowed = &mut *JS::shadow::Zone::asShadowZone(zone);
+            &mut shadowed.stackRoots_
+        } else {
+            let rt = (*ctxfriend).runtime_;
+            let rt = rt as *mut js::PerThreadDataFriendFields_RuntimeDummy;
+            let main_thread = &mut (*rt).mainThread as *mut _;
+            let main_thread = main_thread as *mut js::PerThreadDataFriendFields;
+            &mut (*main_thread).roots.stackRoots_
+        };
+
+        let kind = T::rootKind() as usize;
+        let stack = &mut (*roots)[kind] as *mut _ as *mut _;
+
+        self.stack = stack;
+        self.prev = *stack;
+
+        *stack = self as *mut _ as usize as _;
+    }
+
+    pub unsafe fn remove_from_root_stack(&mut self) {
+        assert!(*self.stack == self as *mut _ as usize as _);
+        *self.stack = self.prev;
+    }
+}
+
+// ___________________________________________________________________________
+// Rooting API for standard JS things
+
+pub trait RootingKind {
+    #[inline(always)]
+    fn rootKind() -> JS::RootKind;
+}
+
+impl RootingKind for *mut JSObject {
+    #[inline(always)]
+    fn rootKind() -> JS::RootKind { JS::RootKind::Object }
+}
+
+impl RootingKind for *mut JSFlatString {
+    #[inline(always)]
+    fn rootKind() -> JS::RootKind { JS::RootKind::String }
+}
+
+impl RootingKind for *mut JSFunction {
+    #[inline(always)]
+    fn rootKind() -> JS::RootKind { JS::RootKind::Object }
+}
+
+impl RootingKind for *mut JSString {
+    #[inline(always)]
+    fn rootKind() -> JS::RootKind { JS::RootKind::String }
+}
+
+impl RootingKind for *mut JS::Symbol {
+    #[inline(always)]
+    fn rootKind() -> JS::RootKind { JS::RootKind::Symbol }
+}
+
+impl RootingKind for *mut JSScript {
+    #[inline(always)]
+    fn rootKind() -> JS::RootKind { JS::RootKind::Script }
+}
+
+impl RootingKind for jsid {
+    #[inline(always)]
+    fn rootKind() -> JS::RootKind { JS::RootKind::Id }
+}
+
+impl RootingKind for JS::Value {
+    #[inline(always)]
+    fn rootKind() -> JS::RootKind { JS::RootKind::Value }
+}
+
+impl RootingKind for JS::PropertyDescriptor {
+    #[inline(always)]
+    fn rootKind() -> JS::RootKind { JS::RootKind::Traceable }
+}
