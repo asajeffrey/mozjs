@@ -163,6 +163,7 @@ const WHITELIST_TYPES: &'static [&'static str] = &[
     "JS::AutoIdVector",
     "JS::AutoObjectVector",
     "JS::CallArgs",
+    "JS::CompileOptions",
     "JS::CompartmentOptions",
     "JS::ForOfIterator",
     "JS::Handle",
@@ -223,6 +224,7 @@ const WHITELIST_VARS: &'static [&'static str] = &[
 
 /// Functions we want to generate bindings to.
 const WHITELIST_FUNCTIONS: &'static [&'static str] = &[
+    "JS::CallArgsFromVp",
     "JS::Evaluate",
     "JS::HeapObjectPostBarrier",
     "JS::HeapValuePostBarrier",

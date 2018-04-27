@@ -160,6 +160,11 @@ impl JSJitMethodCallArgs {
 //     to duplicate so much code here
 impl JS::CallArgs {
     #[inline]
+    pub unsafe fn from_vp(vp: *mut JS::Value, argc: u32) -> JS::CallArgs {
+        JS::CallArgsFromVp(argc, vp)
+    }
+
+    #[inline]
     pub fn index(&self, i: u32) -> JS::HandleValue {
         assert!(i < self.argc_);
         unsafe {
@@ -279,6 +284,7 @@ impl<T> JS::Rooted<T> {
 // Rooting API for standard JS things
 
 pub trait RootingKind {
+    #[allow(non_snake_case)]
     #[inline(always)]
     fn rootKind() -> JS::RootKind;
 }
