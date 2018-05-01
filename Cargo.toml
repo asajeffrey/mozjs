@@ -22,7 +22,6 @@ promises = []
 
 [lib]
 name = "mozjs_sys"
-path = "lib.rs"
 
 [dependencies]
 libc = "0.2"

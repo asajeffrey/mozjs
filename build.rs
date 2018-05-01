@@ -83,11 +83,11 @@ fn build_jsglue() {
         .flag("-std=c++11")
         .flag("-Wno-unused-parameter")
         .flag("-Wno-invalid-offsetof")
-        .file("etc/jsglue.cpp")
+        .file("src/jsglue.cpp")
         .include(out.join("dist/include"))
         .compile("jsglue");
 
-    println!("cargo:rerun-if-changed=etc/jsglue.cpp");
+    println!("cargo:rerun-if-changed=src/jsglue.cpp");
 }
 
 /// Invoke bindgen on the JSAPI headers to produce raw FFI bindings for use from
@@ -104,8 +104,8 @@ fn build_jsapi_bindings() {
     
     let mut builder = bindgen::builder()
         .rust_target(bindgen::RustTarget::Stable_1_19)
-        .header("./etc/jsglue.hpp")
-        .raw_line(include_str!("./etc/jsglue.rs"))
+        .header("./src/jsglue.hpp")
+        .raw_line(include_str!("./src/jsglue.rs"))
         // Translate every enum with the "rustified enum" strategy. We should
         // investigate switching to the "constified module" strategy, which has
         // similar ergonomics but avoids some potential Rust UB footguns.
@@ -161,8 +161,8 @@ fn build_jsapi_bindings() {
     bindings.write_to_file(out.join("jsapi.rs"))
         .expect("Should write bindings to file OK");
 
-    println!("cargo:rerun-if-changed=etc/jsglue.hpp");
-    println!("cargo:rerun-if-changed=etc/jsglue.rs");
+    println!("cargo:rerun-if-changed=src/jsglue.hpp");
+    println!("cargo:rerun-if-changed=src/jsglue.rs");
 }
 
 /// JSAPI types for which we should implement `Sync`.
