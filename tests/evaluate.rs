@@ -14,7 +14,6 @@ use mozjs_sys::jsapi::JSClassOps;
 use mozjs_sys::jsapi::JSContext;
 use mozjs_sys::jsapi::JSProtoKey;
 use mozjs_sys::jsapi::JSRuntime;
-use mozjs_sys::jsapi::JSVersion;
 use mozjs_sys::jsapi::JS_BeginRequest;
 use mozjs_sys::jsapi::JS_DestroyRuntime;
 use mozjs_sys::jsapi::JS_EndRequest;
@@ -23,9 +22,12 @@ use mozjs_sys::jsapi::JS_GetContext;
 use mozjs_sys::jsapi::JS_GlobalObjectTraceHook;
 use mozjs_sys::jsapi::JS_Init;
 use mozjs_sys::jsapi::JS_LeaveCompartment;
+use mozjs_sys::jsapi::JS_NewCompartmentOptions;
+use mozjs_sys::jsapi::JS_NewOwningCompileOptions;
 use mozjs_sys::jsapi::JS_NewGlobalObject;
 use mozjs_sys::jsapi::JS_NewRuntime;
 use mozjs_sys::jsapi::JS_ShutDown;
+use mozjs_sys::jsapi::JS_ValueToInt32;
 
 use std::mem;
 use std::ptr;
@@ -79,7 +81,7 @@ fn main() {
 
         // Create the global object and a new compartment.
         // THIS IS DANGEROUS since the global isn't rooted.
-        let options = JS::CompartmentOptions::new();
+        let options = JS_NewCompartmentOptions();
         let global = JS_NewGlobalObject(
             cx,
             &GLOBAL_CLASS,
@@ -91,13 +93,13 @@ fn main() {
 
         // Evaluate 1+1.
         let script: Vec<u16> = "1+1".encode_utf16().collect();
-        let options = JS::CompileOptions::new(cx, JSVersion::JSVERSION_DEFAULT);
+        let options = JS_NewOwningCompileOptions(cx);
         let mut rval: JS::Value = mem::zeroed();
         let mut rval_handle: JS::MutableHandleValue = mem::zeroed();
         rval_handle.ptr = &mut rval;
 
         assert!(JS::Evaluate2(cx, &options._base, &script[0], script.len(), rval_handle));
-        assert!(rval.toInt32() == 2);
+        assert!(JS_ValueToInt32(rval) == 2);
 
         // Shut everything down.
         JS_LeaveCompartment(cx, compartment);

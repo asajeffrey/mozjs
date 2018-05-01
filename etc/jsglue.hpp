@@ -4,6 +4,9 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+#ifndef _JSGLUE_INCLUDED
+#define _JSGLUE_INCLUDED
+
 #include <stdint.h>
 #ifdef _MSC_VER
 #include <windows.h>
@@ -17,6 +20,12 @@ typedef uint32_t HashNumber;
 #include "js/Conversions.h"
 #include "js/Initialization.h"
 #include "js/MemoryMetrics.h"
+
+// Reexport some functions that are marked inline.
+
+JS::CompartmentOptions JS_NewCompartmentOptions();
+JS::OwningCompileOptions JS_NewOwningCompileOptions(JSContext* cx);
+int32_t JS_ValueToInt32(JS::Value value);
 
 // There's a couple of classes from pre-57 releases of SM that bindgen can't deal with.
 // https://github.com/rust-lang-nursery/rust-bindgen/issues/851
@@ -54,3 +63,5 @@ class JSJitMethodCallArgsReplacement
     JS::detail::NoUsedRval wantUsedRval_;
 #endif
 };
+
+#endif

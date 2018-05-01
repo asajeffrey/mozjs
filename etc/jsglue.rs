@@ -28,18 +28,10 @@ impl Default for jsid {
     fn default() -> Self { unsafe { JSID_VOID } }
 }
 
-impl Default for JS::Value {
-    fn default() -> Self {
-        unsafe {
-            let mut result: JS::Value = ::std::mem::zeroed();
-            result.setUndefined();
-            result
-        }
-    }
-}
-
 impl Default for JS::CompartmentOptions {
-    fn default() -> Self { unsafe { ::std::mem::zeroed() } }
+    fn default() -> Self {
+        unsafe { JS_NewCompartmentOptions() }
+    }
 }
 
 impl Drop for JSAutoCompartment {

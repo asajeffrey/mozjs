@@ -3,6 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 extern crate bindgen;
+extern crate cc;
 
 use std::env;
 use std::ffi::{OsStr, OsString};
@@ -11,6 +12,7 @@ use std::process::{Command, Stdio};
 
 fn main() {
     build_jsapi();
+    build_jsglue();
     build_jsapi_bindings();
 }
 
@@ -51,7 +53,6 @@ fn build_jsapi() {
     }
 
     let result = cmd.args(&["-R", "-f", "makefile.cargo"])
-        .env("CXXFLAGS", "-fkeep-inline-functions")
         .stdout(Stdio::inherit())
         .stderr(Stdio::inherit())
         .status()
@@ -74,6 +75,21 @@ fn build_jsapi() {
     println!("cargo:outdir={}", out_dir);
 }
 
+
+fn build_jsglue() {
+    let out = PathBuf::from(env::var("OUT_DIR").unwrap());
+        
+    cc::Build::new()
+        .flag("-std=c++11")
+        .flag("-Wno-unused-parameter")
+        .flag("-Wno-invalid-offsetof")
+        .file("etc/jsglue.cpp")
+        .include(out.join("dist/include"))
+        .compile("jsglue");
+
+    println!("cargo:rerun-if-changed=etc/jsglue.cpp");
+}
+
 /// Invoke bindgen on the JSAPI headers to produce raw FFI bindings for use from
 /// Rust.
 ///
@@ -82,12 +98,14 @@ fn build_jsapi() {
 fn build_jsapi_bindings() {
     let out = PathBuf::from(env::var("OUT_DIR").unwrap());
 
-    let config = bindgen::CodegenConfig::all();
-
+    let mut config = bindgen::CodegenConfig::all();
+    config.constructors = false;
+    config.destructors = false;
+    
     let mut builder = bindgen::builder()
         .rust_target(bindgen::RustTarget::Stable_1_19)
-        .header("./etc/wrapper.hpp")
-        .raw_line(include_str!("./etc/wrapper.rs"))
+        .header("./etc/jsglue.hpp")
+        .raw_line(include_str!("./etc/jsglue.rs"))
         // Translate every enum with the "rustified enum" strategy. We should
         // investigate switching to the "constified module" strategy, which has
         // similar ergonomics but avoids some potential Rust UB footguns.
@@ -95,7 +113,6 @@ fn build_jsapi_bindings() {
         .enable_cxx_namespaces()
         .with_codegen_config(config)
         .rustfmt_bindings(true)
-	.generate_inline_functions(true)
         .clang_arg("-I").clang_arg(out.join("dist/include").to_str().expect("UTF-8"))
         .clang_arg("-x").clang_arg("c++")
         .clang_arg("-std=gnu++14")
@@ -144,8 +161,8 @@ fn build_jsapi_bindings() {
     bindings.write_to_file(out.join("jsapi.rs"))
         .expect("Should write bindings to file OK");
 
-    println!("cargo:rerun-if-changed=etc/wrapper.hpp");
-    println!("cargo:rerun-if-changed=etc/wrapper.rs");
+    println!("cargo:rerun-if-changed=etc/jsglue.hpp");
+    println!("cargo:rerun-if-changed=etc/jsglue.rs");
 }
 
 /// JSAPI types for which we should implement `Sync`.
@@ -263,6 +280,7 @@ const WHITELIST_FUNCTIONS: &'static [&'static str] = &[
     "JS_MayResolveStandardClass",
     "JS_NewArrayBuffer",
     "JS_NewArrayObject",
+    "JS_NewCompartmentOptions",
     "JS_NewContext",
     "JS_NewFloat32Array",
     "JS_NewFloat64Array",
@@ -272,6 +290,7 @@ const WHITELIST_FUNCTIONS: &'static [&'static str] = &[
     "JS_NewInt32Array",
     "JS_NewInt8Array",
     "JS_NewObject",
+    "JS_NewOwningCompileOptions",
     "JS_NewRuntime",
     "JS_NewUCStringCopyN",
     "JS_NewUint16Array",
@@ -313,6 +332,9 @@ const WHITELIST_FUNCTIONS: &'static [&'static str] = &[
     "js::UnwrapUint8Array",
     "js::UnwrapUint8ClampedArray",
     "js::detail::IsWindowSlow",
+    "JS_NewCompartmentOptions",
+    "JS_NewOwningCompileOptions",
+    "JS_ValueToInt32",
 ];
 
 /// Types that should be treated as an opaque blob of bytes whenever they show
