@@ -2,6 +2,23 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+use jsapi::js;
+use jsapi::JS;
+use jsapi::JSAutoCompartment;
+use jsapi::JSContext;
+use jsapi::JSFlatString;
+use jsapi::JSFunction;
+use jsapi::JSJitMethodCallArgs;
+use jsapi::JSJitSetterCallArgs;
+use jsapi::JSNativeWrapper;
+use jsapi::JSObject;
+use jsapi::JSScript;
+use jsapi::JSString;
+use jsapi::JS_LeaveCompartment;
+use jsapi::JS_NewCompartmentOptions;
+use jsapi::JSID_VOID;
+use jsapi::jsid;
+
 impl<T> ::std::ops::Deref for JS::Handle<T> {
     type Target = T;
 

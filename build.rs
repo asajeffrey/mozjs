@@ -105,7 +105,6 @@ fn build_jsapi_bindings() {
     let mut builder = bindgen::builder()
         .rust_target(bindgen::RustTarget::Stable_1_19)
         .header("./src/jsglue.hpp")
-        .raw_line(include_str!("./src/jsglue.rs"))
         // Translate every enum with the "rustified enum" strategy. We should
         // investigate switching to the "constified module" strategy, which has
         // similar ergonomics but avoids some potential Rust UB footguns.
@@ -162,7 +161,6 @@ fn build_jsapi_bindings() {
         .expect("Should write bindings to file OK");
 
     println!("cargo:rerun-if-changed=src/jsglue.hpp");
-    println!("cargo:rerun-if-changed=src/jsglue.rs");
 }
 
 /// JSAPI types for which we should implement `Sync`.
