@@ -1,9 +1,6 @@
 extern crate libz_sys;
 
-pub mod jsapi {
-    include!(concat!(env!("OUT_DIR"), "/jsapi.rs"));
-
-    pub use self::root::*;
-}
-
+mod generated { include!(concat!(env!("OUT_DIR"), "/jsapi.rs")); }
 mod jsglue;
+
+pub use generated::root as jsapi;

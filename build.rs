@@ -131,7 +131,7 @@ fn build_jsapi_bindings() {
     }
 
     for ty in UNSAFE_IMPL_SYNC_TYPES {
-        builder = builder.raw_line(format!("unsafe impl Sync for {} {{}}", ty));
+        builder = builder.raw_line(format!("unsafe impl Sync for root::{} {{}}", ty));
     }
 
     for ty in WHITELIST_TYPES {
