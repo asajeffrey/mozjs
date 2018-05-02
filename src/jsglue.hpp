@@ -25,6 +25,11 @@ typedef uint32_t HashNumber;
 
 JS::CompartmentOptions JS_NewCompartmentOptions();
 JS::OwningCompileOptions JS_NewOwningCompileOptions(JSContext* cx);
+
+JS::shadow::Zone* JS_AsShadowZone(JS::Zone* zone);
+
+JS::Value JS_Int32Value(int32_t value);
+bool JS_ValueIsInt32(JS::Value value);
 int32_t JS_ValueToInt32(JS::Value value);
 
 // There's a couple of classes from pre-57 releases of SM that bindgen can't deal with.

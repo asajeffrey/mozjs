@@ -14,6 +14,7 @@ use jsapi::JSNativeWrapper;
 use jsapi::JSObject;
 use jsapi::JSScript;
 use jsapi::JSString;
+use jsapi::JS_AsShadowZone;
 use jsapi::JS_LeaveCompartment;
 use jsapi::JS_NewCompartmentOptions;
 use jsapi::JSID_VOID;
@@ -224,7 +225,7 @@ impl JS::CallArgs {
 
     #[inline]
     pub fn callee(&self) -> *mut JSObject {
-        unsafe { self.calleev().toObject() }
+        unsafe { self.calleev().to_object() }
     }
 
     #[inline]
@@ -265,7 +266,7 @@ impl<T> JS::Rooted<T> {
         let ctxfriend = cx as *mut js::ContextFriendFields;
         let zone = (*ctxfriend).zone_;
         let roots: *mut _ = if !zone.is_null() {
-            let shadowed = &mut *JS::shadow::Zone::asShadowZone(zone);
+            let shadowed = &mut *JS_AsShadowZone(zone);
             &mut shadowed.stackRoots_
         } else {
             let rt = (*ctxfriend).runtime_;

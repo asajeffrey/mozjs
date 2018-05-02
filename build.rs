@@ -98,9 +98,13 @@ fn build_jsglue() {
 fn build_jsapi_bindings() {
     let out = PathBuf::from(env::var("OUT_DIR").unwrap());
 
+    // By default, constructors, destructors and methods declared in .h files are inlined,
+    // so their symbols aren't available. Adding the -fkeep-inlined-functions option
+    // causes the jsapi library to bloat from 500M to 6G, so that's not an option.
     let mut config = bindgen::CodegenConfig::all();
     config.constructors = false;
     config.destructors = false;
+    config.methods = false;
     
     let mut builder = bindgen::builder()
         .rust_target(bindgen::RustTarget::Stable_1_19)
@@ -221,6 +225,7 @@ const WHITELIST_TYPES: &'static [&'static str] = &[
     "JSString",
     "JSType",
     "JSTypedMethodJitInfo",
+    "JSValueType",
     "js::ContextFriendFields",
     "js::ESClass",
     "js::PerThreadDataFriendFields",
@@ -333,6 +338,9 @@ const WHITELIST_FUNCTIONS: &'static [&'static str] = &[
     "js::detail::IsWindowSlow",
     "JS_NewCompartmentOptions",
     "JS_NewOwningCompileOptions",
+    "JS_AsShadowZone",
+    "JS_Int32Value",
+    "JS_ValueIsInt32",
     "JS_ValueToInt32",
 ];
 

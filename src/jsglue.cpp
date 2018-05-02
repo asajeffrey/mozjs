@@ -18,6 +18,22 @@ JS::OwningCompileOptions JS_NewOwningCompileOptions(JSContext* cx) {
     return result;
 }
 
+JS::shadow::Zone* JS_AsShadowZone(JS::Zone* zone) {
+    return JS::shadow::Zone::asShadowZone(zone);
+}
+
+// These functions are only intended for use in testing,
+// to make sure that the Rust implementation of JS::Value
+// agrees with the C++ implementation.
+
+JS::Value JS_Int32Value(int32_t value) {
+    return JS::Int32Value(value);
+}
+
+bool JS_ValueIsInt32(JS::Value value) {
+    return value.isInt32();
+}
+
 int32_t JS_ValueToInt32(JS::Value value) {
     return value.toInt32();
 }
