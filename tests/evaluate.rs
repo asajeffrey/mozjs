@@ -22,12 +22,11 @@ use mozjs_sys::jsapi::JS_GetContext;
 use mozjs_sys::jsapi::JS_GlobalObjectTraceHook;
 use mozjs_sys::jsapi::JS_Init;
 use mozjs_sys::jsapi::JS_LeaveCompartment;
-use mozjs_sys::jsapi::JS_NewCompartmentOptions;
-use mozjs_sys::jsapi::JS_NewOwningCompileOptions;
 use mozjs_sys::jsapi::JS_NewGlobalObject;
 use mozjs_sys::jsapi::JS_NewRuntime;
 use mozjs_sys::jsapi::JS_ShutDown;
-use mozjs_sys::jsapi::JS_ValueToInt32;
+use mozjs_sys::jsapi::glue::JS_NewCompartmentOptions;
+use mozjs_sys::jsapi::glue::JS_NewOwningCompileOptions;
 
 use std::mem;
 use std::ptr;
@@ -99,7 +98,7 @@ fn main() {
         rval_handle.ptr = &mut rval;
 
         assert!(JS::Evaluate2(cx, &options._base, &script[0], script.len(), rval_handle));
-        assert!(JS_ValueToInt32(rval) == 2);
+        assert!(rval.to_int32() == 2);
 
         // Shut everything down.
         JS_LeaveCompartment(cx, compartment);

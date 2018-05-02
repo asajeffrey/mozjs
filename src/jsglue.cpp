@@ -6,6 +6,8 @@
 
 #include "jsglue.hpp"
 
+namespace glue {
+
 // Reexport some functions that are marked inline.
 
 JS::CompartmentOptions JS_NewCompartmentOptions() {
@@ -76,4 +78,6 @@ JS::Value JS_UndefinedValue() {
 
 bool JS_ValueIsUndefined(JS::Value value) {
     return value.isUndefined();
+}
+
 }

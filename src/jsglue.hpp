@@ -23,6 +23,8 @@ typedef uint32_t HashNumber;
 
 // Reexport some functions that are marked inline.
 
+namespace glue {
+    
 JS::CompartmentOptions JS_NewCompartmentOptions();
 JS::OwningCompileOptions JS_NewOwningCompileOptions(JSContext* cx);
 
@@ -45,6 +47,8 @@ bool JS_ValueIsNull(JS::Value value);
 
 JS::Value JS_UndefinedValue();
 bool JS_ValueIsUndefined(JS::Value value);
+
+}
 
 // There's a couple of classes from pre-57 releases of SM that bindgen can't deal with.
 // https://github.com/rust-lang-nursery/rust-bindgen/issues/851

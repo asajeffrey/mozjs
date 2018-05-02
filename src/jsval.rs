@@ -8,12 +8,14 @@
 use jsapi::{JSObject, JSString};
 use jsapi::jsval_layout;
 use jsapi::JSValueType;
-use jsapi::JS::Value as JSVal;
+use jsapi::JS::Value;
 use jsapi::JS::TraceKind;
 
 use libc::c_void;
 use std::default::Default;
 use std::mem;
+
+pub type JSVal = Value;
 
 #[cfg(target_pointer_width = "64")]
 const JSVAL_TAG_SHIFT: usize = 47;
@@ -492,7 +494,7 @@ fn test_representation_agreement() {
     // Annoyingly, we can't check JSObject, JSString, etc. without creating a runtime,
     // since the constructor has checks that fail if we try mocking.  There are no-check
     // versions of the setters, but they're private.
-    use jsapi::*;
+    use jsapi::glue::*;
     assert_agreement(unsafe { JS_BooleanValue(true) }, BooleanValue(true));
     assert_agreement(unsafe { JS_DoubleValue(3.14159) }, DoubleValue(3.14159));
     assert_agreement(unsafe { JS_Int32Value(37) }, Int32Value(37));
@@ -502,7 +504,7 @@ fn test_representation_agreement() {
 
 #[cfg(test)]
 fn assert_agreement(val1: JSVal, val2: JSVal) {
-    use jsapi::*;
+    use jsapi::glue::*;
 
     assert_eq!(val1.asBits(), val2.asBits());
 
