@@ -482,6 +482,10 @@ impl JSVal {
     }
 }
 
+impl Default for JSVal {
+    fn default() ->JSVal { UndefinedValue() }
+}
+
 // These tests make sure that the Rust definitions agree with the C++ definitions.
 #[test]
 fn test_representation_agreement() {

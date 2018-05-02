@@ -6,14 +6,10 @@ use jsapi::js;
 use jsapi::JS;
 use jsapi::JSAutoCompartment;
 use jsapi::JSContext;
-use jsapi::JSFlatString;
-use jsapi::JSFunction;
 use jsapi::JSJitMethodCallArgs;
 use jsapi::JSJitSetterCallArgs;
 use jsapi::JSNativeWrapper;
 use jsapi::JSObject;
-use jsapi::JSScript;
-use jsapi::JSString;
 use jsapi::JS_AsShadowZone;
 use jsapi::JS_LeaveCompartment;
 use jsapi::JS_NewCompartmentOptions;
@@ -225,7 +221,7 @@ impl JS::CallArgs {
 
     #[inline]
     pub fn callee(&self) -> *mut JSObject {
-        unsafe { self.calleev().to_object() }
+        self.calleev().to_object()
     }
 
     #[inline]
