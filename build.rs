@@ -339,9 +339,19 @@ const WHITELIST_FUNCTIONS: &'static [&'static str] = &[
     "JS_NewCompartmentOptions",
     "JS_NewOwningCompileOptions",
     "JS_AsShadowZone",
+    "JS_BooleanValue",
+    "JS_ValueIsBoolean",
+    "JS_ValueToBoolean",
+    "JS_DoubleValue",
+    "JS_ValueIsDouble",
+    "JS_ValueToDouble",
     "JS_Int32Value",
     "JS_ValueIsInt32",
     "JS_ValueToInt32",
+    "JS_NullValue",
+    "JS_ValueIsNull",
+    "JS_UndefinedValue",
+    "JS_ValueIsUndefined",
 ];
 
 /// Types that should be treated as an opaque blob of bytes whenever they show

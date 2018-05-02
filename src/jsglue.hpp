@@ -28,9 +28,23 @@ JS::OwningCompileOptions JS_NewOwningCompileOptions(JSContext* cx);
 
 JS::shadow::Zone* JS_AsShadowZone(JS::Zone* zone);
 
+JS::Value JS_BooleanValue(bool value);
+bool JS_ValueIsBoolean(JS::Value value);
+bool JS_ValueToBoolean(JS::Value value);
+
+JS::Value JS_DoubleValue(double value);
+bool JS_ValueIsDouble(JS::Value value);
+double JS_ValueToDouble(JS::Value value);
+
 JS::Value JS_Int32Value(int32_t value);
 bool JS_ValueIsInt32(JS::Value value);
 int32_t JS_ValueToInt32(JS::Value value);
+
+JS::Value JS_NullValue();
+bool JS_ValueIsNull(JS::Value value);
+
+JS::Value JS_UndefinedValue();
+bool JS_ValueIsUndefined(JS::Value value);
 
 // There's a couple of classes from pre-57 releases of SM that bindgen can't deal with.
 // https://github.com/rust-lang-nursery/rust-bindgen/issues/851

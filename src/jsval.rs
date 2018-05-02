@@ -485,18 +485,40 @@ impl JSVal {
 // These tests make sure that the Rust definitions agree with the C++ definitions.
 #[test]
 fn test_representation_agreement() {
+    // Annoyingly, we can't check JSObject, JSString, etc. without creating a runtime,
+    // since the constructor has checks that fail if we try mocking.  There are no-check
+    // versions of the setters, but they're private.
     use jsapi::*;
-
+    assert_agreement(unsafe { JS_BooleanValue(true) }, BooleanValue(true));
+    assert_agreement(unsafe { JS_DoubleValue(3.14159) }, DoubleValue(3.14159));
     assert_agreement(unsafe { JS_Int32Value(37) }, Int32Value(37));
+    assert_agreement(unsafe { JS_NullValue() }, NullValue());
+    assert_agreement(unsafe { JS_UndefinedValue() }, UndefinedValue());
 }
 
+#[cfg(test)]
 fn assert_agreement(val1: JSVal, val2: JSVal) {
     use jsapi::*;
 
     assert_eq!(val1.asBits(), val2.asBits());
 
+    assert_eq!(unsafe { JS_ValueIsBoolean(val1) }, val2.is_boolean());
+    if val2.is_boolean() {
+        assert_eq!(unsafe { JS_ValueToBoolean(val1) }, val2.to_boolean());
+    }
+
+    assert_eq!(unsafe { JS_ValueIsDouble(val1) }, val2.is_double());
+    if val2.is_double() {
+        assert_eq!(unsafe { JS_ValueToDouble(val1) }, val2.to_double());
+    }
+
     assert_eq!(unsafe { JS_ValueIsInt32(val1) }, val2.is_int32());
     if val2.is_int32() {
         assert_eq!(unsafe { JS_ValueToInt32(val1) }, val2.to_int32());
     }
+
+    assert_eq!(unsafe { JS_ValueIsNull(val1) }, val2.is_null());
+
+    assert_eq!(unsafe { JS_ValueIsUndefined(val1) }, val2.is_undefined());
+
 }

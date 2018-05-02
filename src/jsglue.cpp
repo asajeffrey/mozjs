@@ -26,6 +26,30 @@ JS::shadow::Zone* JS_AsShadowZone(JS::Zone* zone) {
 // to make sure that the Rust implementation of JS::Value
 // agrees with the C++ implementation.
 
+JS::Value JS_BooleanValue(bool value) {
+    return JS::BooleanValue(value);
+}
+
+bool JS_ValueIsBoolean(JS::Value value) {
+    return value.isBoolean();
+}
+
+bool JS_ValueToBoolean(JS::Value value) {
+    return value.toBoolean();
+}
+
+JS::Value JS_DoubleValue(double value) {
+    return JS::DoubleValue(value);
+}
+
+bool JS_ValueIsDouble(JS::Value value) {
+    return value.isDouble();
+}
+
+double JS_ValueToDouble(JS::Value value) {
+    return value.toDouble();
+}
+
 JS::Value JS_Int32Value(int32_t value) {
     return JS::Int32Value(value);
 }
@@ -36,4 +60,20 @@ bool JS_ValueIsInt32(JS::Value value) {
 
 int32_t JS_ValueToInt32(JS::Value value) {
     return value.toInt32();
+}
+
+JS::Value JS_NullValue() {
+    return JS::NullValue();
+}
+
+bool JS_ValueIsNull(JS::Value value) {
+    return value.isNull();
+}
+
+JS::Value JS_UndefinedValue() {
+    return JS::UndefinedValue();
+}
+
+bool JS_ValueIsUndefined(JS::Value value) {
+    return value.isUndefined();
 }
