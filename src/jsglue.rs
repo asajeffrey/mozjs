@@ -18,6 +18,7 @@ use jsapi::JS_LeaveCompartment;
 use jsapi::JS_NewCompartmentOptions;
 use jsapi::JSID_VOID;
 use jsapi::jsid;
+use jsapi::rooting;
 
 impl<T> ::std::ops::Deref for JS::Handle<T> {
     type Target = T;
@@ -260,7 +261,7 @@ impl<T> JS::Rooted<T> {
         }
     }
 
-    pub unsafe fn add_to_root_stack(&mut self, cx: *mut JSContext) where T: RootingKind {
+    pub unsafe fn add_to_root_stack(&mut self, cx: *mut JSContext) where T: rooting::RootKind {
         let ctxfriend = cx as *mut js::ContextFriendFields;
         let zone = (*ctxfriend).zone_;
         let roots: *mut _ = if !zone.is_null() {
@@ -287,58 +288,4 @@ impl<T> JS::Rooted<T> {
         assert!(*self.stack == self as *mut _ as usize as _);
         *self.stack = self.prev;
     }
-}
-
-// ___________________________________________________________________________
-// Rooting API for standard JS things
-
-pub trait RootingKind {
-    #[allow(non_snake_case)]
-    #[inline(always)]
-    fn rootKind() -> JS::RootKind;
-}
-
-impl RootingKind for *mut JSObject {
-    #[inline(always)]
-    fn rootKind() -> JS::RootKind { JS::RootKind::Object }
-}
-
-impl RootingKind for *mut JSFlatString {
-    #[inline(always)]
-    fn rootKind() -> JS::RootKind { JS::RootKind::String }
-}
-
-impl RootingKind for *mut JSFunction {
-    #[inline(always)]
-    fn rootKind() -> JS::RootKind { JS::RootKind::Object }
-}
-
-impl RootingKind for *mut JSString {
-    #[inline(always)]
-    fn rootKind() -> JS::RootKind { JS::RootKind::String }
-}
-
-impl RootingKind for *mut JS::Symbol {
-    #[inline(always)]
-    fn rootKind() -> JS::RootKind { JS::RootKind::Symbol }
-}
-
-impl RootingKind for *mut JSScript {
-    #[inline(always)]
-    fn rootKind() -> JS::RootKind { JS::RootKind::Script }
-}
-
-impl RootingKind for jsid {
-    #[inline(always)]
-    fn rootKind() -> JS::RootKind { JS::RootKind::Id }
-}
-
-impl RootingKind for JS::Value {
-    #[inline(always)]
-    fn rootKind() -> JS::RootKind { JS::RootKind::Value }
-}
-
-impl RootingKind for JS::PropertyDescriptor {
-    #[inline(always)]
-    fn rootKind() -> JS::RootKind { JS::RootKind::Traceable }
 }
