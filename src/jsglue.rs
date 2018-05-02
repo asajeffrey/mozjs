@@ -18,7 +18,7 @@ use jsapi::JS_LeaveCompartment;
 use jsapi::JS_NewCompartmentOptions;
 use jsapi::JSID_VOID;
 use jsapi::jsid;
-use jsapi::rooting;
+use rooting;
 
 impl<T> ::std::ops::Deref for JS::Handle<T> {
     type Target = T;

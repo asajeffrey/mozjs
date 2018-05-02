@@ -198,6 +198,7 @@ const WHITELIST_TYPES: &'static [&'static str] = &[
     "JS::Rooted",
     "JS::RootedObject",
     "JS::ServoSizes",
+    "JS::TraceKind",
     "JS::Value",
     "JS::Zone",
     "JS::shadow::Zone",
