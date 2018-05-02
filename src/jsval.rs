@@ -481,3 +481,22 @@ impl JSVal {
         }
     }
 }
+
+// These tests make sure that the Rust definitions agree with the C++ definitions.
+#[test]
+fn test_representation_agreement() {
+    use jsapi::*;
+
+    assert_agreement(unsafe { JS_Int32Value(37) }, Int32Value(37));
+}
+
+fn assert_agreement(val1: JSVal, val2: JSVal) {
+    use jsapi::*;
+
+    assert_eq!(val1.asBits(), val2.asBits());
+
+    assert_eq!(unsafe { JS_ValueIsInt32(val1) }, val2.is_int32());
+    if val2.is_int32() {
+        assert_eq!(unsafe { JS_ValueToInt32(val1) }, val2.to_int32());
+    }
+}
