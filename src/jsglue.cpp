@@ -26,12 +26,12 @@ JS::shadow::Zone* JS_AsShadowZone(JS::Zone* zone) {
 
 // Reexport some methods
 
-bool JS_ForOfIteratorInit(JS::ForOfIterator iterator, JS::HandleValue iterable, JS::ForOfIterator::NonIterableBehavior nonIterableBehavior) {
-    return iterator.init(iterable, nonIterableBehavior);
+bool JS_ForOfIteratorInit(JS::ForOfIterator* iterator, JS::HandleValue iterable, JS::ForOfIterator::NonIterableBehavior nonIterableBehavior) {
+    return iterator->init(iterable, nonIterableBehavior);
 }
 
-bool JS_ForOfIteratorNext(JS::ForOfIterator iterator, JS::MutableHandleValue val, bool* done) {
-    return iterator.next(val, done);
+bool JS_ForOfIteratorNext(JS::ForOfIterator* iterator, JS::MutableHandleValue val, bool* done) {
+    return iterator->next(val, done);
 }
 
 // These functions are only intended for use in testing,
