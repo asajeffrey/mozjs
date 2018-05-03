@@ -130,6 +130,13 @@ impl JS::HandleValue {
 }
 
 impl JS::HandleValueArray {
+    pub fn new() -> JS::HandleValueArray {
+        JS::HandleValueArray {
+            length_: 0,
+            elements_: ptr::null(),
+        }
+    }
+
     pub unsafe fn from_rooted_slice(values: &[JS::Value]) -> JS::HandleValueArray {
         JS::HandleValueArray {
             length_: values.len(),
