@@ -28,6 +28,9 @@ namespace glue {
 JS::CompartmentOptions JS_NewCompartmentOptions();
 JS::OwningCompileOptions JS_NewOwningCompileOptions(JSContext* cx);
 
+bool JS_ForOfIteratorInit(JS::ForOfIterator* iterator, JS::HandleValue iterable, JS::ForOfIterator::NonIterableBehavior nonIterableBehavior);
+bool JS_ForOfIteratorNext(JS::ForOfIterator* iterator, JS::MutableHandleValue val, bool* done);
+
 JS::shadow::Zone* JS_AsShadowZone(JS::Zone* zone);
 
 JS::Value JS_BooleanValue(bool value);

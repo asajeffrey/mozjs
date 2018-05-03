@@ -16,6 +16,8 @@ use jsapi::JS_EnterCompartment;
 use jsapi::JS_LeaveCompartment;
 use jsapi::glue::JS_AsShadowZone;
 use jsapi::glue::JS_NewCompartmentOptions;
+use jsapi::glue::JS_ForOfIteratorInit;
+use jsapi::glue::JS_ForOfIteratorNext;
 use jsapi::jsid;
 use jsgc::RootKind;
 use jsval::UndefinedValue;
@@ -375,5 +377,15 @@ impl JS::ObjectOpResult {
     pub fn succeed(&mut self) -> bool {
         self.code_ = JS::ObjectOpResult_SpecialCodes::OkCode as usize;
         true
+    }
+}
+
+impl JS::ForOfIterator {
+    pub unsafe fn init(&mut self, iterable: JS::HandleValue, non_iterable_behavior: JS::ForOfIterator_NonIterableBehavior) -> bool {
+        JS_ForOfIteratorInit(self, iterable, non_iterable_behavior)
+    }
+
+    pub unsafe fn next(&mut self, val: JS::MutableHandleValue, done: *mut bool) -> bool {
+        JS_ForOfIteratorNext(self, val, done)
     }
 }
