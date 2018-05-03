@@ -229,6 +229,8 @@ const OPAQUE_TYPES: &'static [&'static str] = &[
 /// Types for which we should NEVER generate bindings, even if it is used within
 /// a type or function signature that we are generating bindings for.
 const BLACKLIST_TYPES: &'static [&'static str] = &[
+    // We'll be using libc::FILE.
+    "FILE",
     // We provide our own definition because we need to express trait bounds in
     // the definition of the struct to make our Drop implementation correct.
     "JS::Heap",
@@ -236,9 +238,8 @@ const BLACKLIST_TYPES: &'static [&'static str] = &[
 
 /// Definitions for types that were blacklisted
 const MODULE_RAW_LINES: &'static [(&'static str, &'static str)] = &[
-    ("root::JS", "
-pub type Heap<T> = ::jsgc::Heap<T>;
-pub type AutoGCRooterTag = AutoGCRooter__bindgen_ty_1;
-pub type CustomAutoRooterVFTable = CustomAutoRooter__bindgen_vtable;
-")
+    ("root", "pub type FILE = ::libc::FILE;"),
+    ("root::JS", "pub type Heap<T> = ::jsgc::Heap<T>;"),
+    ("root::JS", "pub type AutoGCRooterTag = AutoGCRooter__bindgen_ty_1;"),
+    ("root::JS", "pub type CustomAutoRooterVFTable = CustomAutoRooter__bindgen_vtable;")
 ];
