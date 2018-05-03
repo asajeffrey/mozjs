@@ -227,3 +227,19 @@ impl<T: GCMethods + Copy + PartialEq> PartialEq for Heap<T> {
         self.get() == other.get()
     }
 }
+
+/// Trait for things that can be converted to handles
+
+pub trait IntoHandle {
+    /// The type of the handle
+    type Target;
+
+    /// Convert this object to a handle.
+    fn into_handle(self) -> JS::Handle<Self::Target>;
+}
+
+impl<T: IntoHandle> From<T> for JS::Handle<T::Target> {
+    fn from(value: T) -> Self {
+        value.into_handle()
+    }
+}
