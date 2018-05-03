@@ -30,3 +30,6 @@ libz-sys = "1.0"
 [build-dependencies]
 bindgen = "0.36"
 cc = "1.0"
+
+[patch.crates-io]
+bindgen = { git = "https://github.com/emilio/rust-bindgen", branch = "per-module-lines" }

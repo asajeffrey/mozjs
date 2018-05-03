@@ -158,6 +158,10 @@ fn build_jsapi_bindings() {
         builder = builder.blacklist_type(ty);
     }
 
+    for &(module, raw_line) in MODULE_RAW_LINES {
+        builder = builder.module_raw_line(module, raw_line);
+    }
+
     let bindings = builder.generate()
         .expect("Should generate JSAPI bindings OK");
 
@@ -420,4 +424,9 @@ const BLACKLIST_TYPES: &'static [&'static str] = &[
     // We provide our own definition because we need to express trait bounds in
     // the definition of the struct to make our Drop implementation correct.
     "JS::Heap",
+];
+
+/// Definitions for types that were blacklisted
+const MODULE_RAW_LINES: &'static [(&'static str, &'static str)] = &[
+    ("root::JS", "pub type Heap<T> = ::jsgc::Heap<T>;")
 ];

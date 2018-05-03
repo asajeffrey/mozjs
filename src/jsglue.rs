@@ -15,9 +15,14 @@ use jsapi::JS_LeaveCompartment;
 use jsapi::glue::JS_NewCompartmentOptions;
 use jsapi::JSID_VOID;
 use jsapi::jsid;
-use rooting;
+use jsgc::RootKind;
+use jsval::UndefinedValue;
 
-impl<T> ::std::ops::Deref for JS::Handle<T> {
+use std::ops::Deref;
+use std::ops::DerefMut;
+use std::ptr;
+
+impl<T> Deref for JS::Handle<T> {
     type Target = T;
 
     fn deref<'a>(&'a self) -> &'a T {
@@ -25,7 +30,7 @@ impl<T> ::std::ops::Deref for JS::Handle<T> {
     }
 }
 
-impl<T> ::std::ops::Deref for JS::MutableHandle<T> {
+impl<T> Deref for JS::MutableHandle<T> {
     type Target = T;
 
     fn deref<'a>(&'a self) -> &'a T {
@@ -33,7 +38,7 @@ impl<T> ::std::ops::Deref for JS::MutableHandle<T> {
     }
 }
 
-impl<T> ::std::ops::DerefMut for JS::MutableHandle<T> {
+impl<T> DerefMut for JS::MutableHandle<T> {
     fn deref_mut<'a>(&'a mut self) -> &'a mut T {
         unsafe { &mut *self.ptr }
     }
@@ -46,6 +51,18 @@ impl Default for jsid {
 impl Default for JS::CompartmentOptions {
     fn default() -> Self {
         unsafe { JS_NewCompartmentOptions() }
+    }
+}
+
+impl Default for JS::PropertyDescriptor {
+    fn default() -> Self {
+        JS::PropertyDescriptor {
+            obj: ptr::null_mut(),
+            attrs: 0,
+            getter: None,
+            setter: None,
+            value: UndefinedValue()
+        }
     }
 }
 
@@ -258,7 +275,7 @@ impl<T> JS::Rooted<T> {
         }
     }
 
-    pub unsafe fn add_to_root_stack(&mut self, cx: *mut JSContext) where T: rooting::RootKind {
+    pub unsafe fn add_to_root_stack(&mut self, cx: *mut JSContext) where T: RootKind {
         let ctxfriend = cx as *mut js::ContextFriendFields;
         let zone = (*ctxfriend).zone_;
         let roots: *mut _ = if !zone.is_null() {

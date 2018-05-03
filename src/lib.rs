@@ -8,7 +8,7 @@ mod generated { include!(concat!(env!("OUT_DIR"), "/jsapi.rs")); }
 mod jsglue;
 
 // Modules with public definitions
-pub mod rooting;
+pub mod jsgc;
 pub mod jsval;
 
 // Reexport the bindings in the jsapi module
