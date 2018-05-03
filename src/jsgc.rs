@@ -238,8 +238,20 @@ pub trait IntoHandle {
     fn into_handle(self) -> JS::Handle<Self::Target>;
 }
 
+pub trait IntoMutableHandle: IntoHandle {
+    /// Convert this object to a mutable handle.
+    fn into_handle_mut(self) -> JS::MutableHandle<Self::Target>;
+}
+
 impl<T: IntoHandle> From<T> for JS::Handle<T::Target> {
     fn from(value: T) -> Self {
         value.into_handle()
     }
 }
+
+impl<T: IntoMutableHandle> From<T> for JS::MutableHandle<T::Target> {
+    fn from(value: T) -> Self {
+        value.into_handle_mut()
+    }
+}
+
