@@ -33,6 +33,8 @@ bool JS_ForOfIteratorNext(JS::ForOfIterator* iterator, JS::MutableHandleValue va
 
 JS::shadow::Zone* JS_AsShadowZone(JS::Zone* zone);
 
+JS::CallArgs JS_CallArgsFromVp(unsigned argc, JS::Value* vp);
+
 JS::Value JS_BooleanValue(bool value);
 bool JS_ValueIsBoolean(JS::Value value);
 bool JS_ValueToBoolean(JS::Value value);

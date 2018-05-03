@@ -24,6 +24,10 @@ JS::shadow::Zone* JS_AsShadowZone(JS::Zone* zone) {
     return JS::shadow::Zone::asShadowZone(zone);
 }
 
+JS::CallArgs JS_CallArgsFromVp(unsigned argc, JS::Value* vp) {
+    return JS::CallArgsFromVp(argc, vp);
+}
+
 // Reexport some methods
 
 bool JS_ForOfIteratorInit(JS::ForOfIterator* iterator, JS::HandleValue iterable, JS::ForOfIterator::NonIterableBehavior nonIterableBehavior) {

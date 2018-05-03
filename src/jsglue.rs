@@ -15,6 +15,7 @@ use jsapi::JSObject;
 use jsapi::JS_EnterCompartment;
 use jsapi::JS_LeaveCompartment;
 use jsapi::glue::JS_AsShadowZone;
+use jsapi::glue::JS_CallArgsFromVp;
 use jsapi::glue::JS_NewCompartmentOptions;
 use jsapi::glue::JS_ForOfIteratorInit;
 use jsapi::glue::JS_ForOfIteratorNext;
@@ -253,7 +254,7 @@ impl JSJitGetterCallArgs {
 impl JS::CallArgs {
     #[inline]
     pub unsafe fn from_vp(vp: *mut JS::Value, argc: u32) -> JS::CallArgs {
-        JS::CallArgsFromVp(argc, vp)
+        JS_CallArgsFromVp(argc, vp)
     }
 
     #[inline]
