@@ -236,5 +236,9 @@ const BLACKLIST_TYPES: &'static [&'static str] = &[
 
 /// Definitions for types that were blacklisted
 const MODULE_RAW_LINES: &'static [(&'static str, &'static str)] = &[
-    ("root::JS", "pub type Heap<T> = ::jsgc::Heap<T>;")
+    ("root::JS", "
+pub type Heap<T> = ::jsgc::Heap<T>;
+pub type AutoGCRooterTag = AutoGCRooter__bindgen_ty_1;
+pub type CustomAutoRooterVFTable = CustomAutoRooter__bindgen_vtable;
+")
 ];

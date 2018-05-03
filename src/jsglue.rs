@@ -151,6 +151,40 @@ impl JS::HandleObject {
 // ___________________________________________________________________________
 // Implementations for various things in jsapi.rs
 
+impl JS::AutoGCRooter {
+    pub fn new_unrooted(tag: JS::AutoGCRooterTag) -> JS::AutoGCRooter {
+        JS::AutoGCRooter {
+            down: ptr::null(),
+            tag_: tag as isize,
+            stackTop: ptr::null(),
+        }
+    }
+
+    pub unsafe fn add_to_root_stack(&mut self, cx: *mut JSContext) {
+        #[allow(non_snake_case)]
+        let autoGCRooters: &mut _ = {
+            let ctxfriend = cx as *mut js::ContextFriendFields;
+            &mut (*ctxfriend).roots.autoGCRooters_
+        };
+        self.stackTop = autoGCRooters;
+        self.down = *autoGCRooters;
+
+        assert!(*self.stackTop != self);
+        *autoGCRooters = self;
+    }
+
+    pub unsafe fn remove_from_root_stack(&mut self) {
+        assert!(*self.stackTop == self);
+        // This hoop-dancing is needed because bindgen gives stackTop
+        // the type *const *mut AutoGCRooter, so we need to make it
+        // mutable before setting it.
+        // https://github.com/rust-lang-nursery/rust-bindgen/issues/511
+        #[allow(non_snake_case)]
+        let autoGCRooters = &*self.stackTop as *const _ as *mut _;
+        *autoGCRooters = self.down;
+    }
+}
+
 impl JSJitMethodCallArgs {
     #[inline]
     pub fn get(&self, i: u32) -> JS::HandleValue {
