@@ -6,14 +6,16 @@ use jsapi::js;
 use jsapi::JS;
 use jsapi::JSAutoCompartment;
 use jsapi::JSContext;
+use jsapi::JSID_VOID;
+use jsapi::JSJitGetterCallArgs;
 use jsapi::JSJitMethodCallArgs;
 use jsapi::JSJitSetterCallArgs;
 use jsapi::JSNativeWrapper;
 use jsapi::JSObject;
-use jsapi::glue::JS_AsShadowZone;
+use jsapi::JS_EnterCompartment;
 use jsapi::JS_LeaveCompartment;
+use jsapi::glue::JS_AsShadowZone;
 use jsapi::glue::JS_NewCompartmentOptions;
-use jsapi::JSID_VOID;
 use jsapi::jsid;
 use jsgc::RootKind;
 use jsval::UndefinedValue;
@@ -158,6 +160,15 @@ impl JS::HandleObject {
 // ___________________________________________________________________________
 // Implementations for various things in jsapi.rs
 
+impl JSAutoCompartment {
+    pub fn new(cx: *mut JSContext, target: *mut JSObject) -> JSAutoCompartment {
+        JSAutoCompartment {
+            cx_: cx,
+            oldCompartment_: unsafe { JS_EnterCompartment(cx, target) }
+        }
+    }
+}
+
 impl JS::AutoGCRooter {
     pub fn new_unrooted(tag: JS::AutoGCRooterTag) -> JS::AutoGCRooter {
         JS::AutoGCRooter {
@@ -218,6 +229,20 @@ impl JSJitMethodCallArgs {
         unsafe {
             JS::MutableHandleValue::from_marked_location(self.argv_.offset(i as isize))
         }
+    }
+
+    #[inline]
+    pub fn rval(&self) -> JS::MutableHandleValue {
+        unsafe {
+            JS::MutableHandleValue::from_marked_location(self.argv_.offset(-2))
+        }
+    }
+}
+
+impl JSJitGetterCallArgs {
+    #[inline]
+    pub fn rval(&self) -> JS::MutableHandleValue {
+        self._base
     }
 }
 
@@ -342,5 +367,13 @@ impl<T> JS::Rooted<T> {
     pub unsafe fn remove_from_root_stack(&mut self) {
         assert!(*self.stack == self as *mut _ as usize as _);
         *self.stack = self.prev;
+    }
+}
+
+impl JS::ObjectOpResult {
+    /// Set this ObjectOpResult to true and return true.
+    pub fn succeed(&mut self) -> bool {
+        self.code_ = JS::ObjectOpResult_SpecialCodes::OkCode as usize;
+        true
     }
 }
