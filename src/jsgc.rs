@@ -10,6 +10,9 @@ use jsapi::JSID_VOID;
 use jsapi::JSObject;
 use jsapi::JSScript;
 use jsapi::JSString;
+use jsapi::JSTracer;
+
+use libc::c_void;
 
 use std::cell::UnsafeCell;
 use std::mem;
@@ -255,3 +258,8 @@ impl<T: IntoMutableHandle> From<T> for JS::MutableHandle<T::Target> {
     }
 }
 
+// Methods for a CustomAutoRooter
+#[repr(C)]
+pub struct CustomAutoRooterVFTable {
+    pub trace: unsafe extern "C" fn (this: *mut c_void, trc: *mut JSTracer),
+}

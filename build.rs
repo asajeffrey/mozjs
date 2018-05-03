@@ -241,5 +241,4 @@ const MODULE_RAW_LINES: &'static [(&'static str, &'static str)] = &[
     ("root", "pub type FILE = ::libc::FILE;"),
     ("root::JS", "pub type Heap<T> = ::jsgc::Heap<T>;"),
     ("root::JS", "pub type AutoGCRooterTag = AutoGCRooter__bindgen_ty_1;"),
-    ("root::JS", "pub type CustomAutoRooterVFTable = CustomAutoRooter__bindgen_vtable;")
 ];
