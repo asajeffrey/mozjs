@@ -6,6 +6,7 @@ use jsapi::js;
 use jsapi::JS;
 use jsapi::JSAutoCompartment;
 use jsapi::JSContext;
+use jsapi::JSErrNum;
 use jsapi::JSID_VOID;
 use jsapi::JSJitGetterCallArgs;
 use jsapi::JSJitMethodCallArgs;
@@ -377,6 +378,13 @@ impl JS::ObjectOpResult {
     /// Set this ObjectOpResult to true and return true.
     pub fn succeed(&mut self) -> bool {
         self.code_ = JS::ObjectOpResult_SpecialCodes::OkCode as usize;
+        true
+    }
+
+    #[allow(non_snake_case)]
+    pub fn failNoNamedSetter(&mut self) -> bool {
+        assert!(self.code_ != JS::ObjectOpResult_SpecialCodes::OkCode as usize);
+        self.code_ = JSErrNum::JSMSG_NO_NAMED_SETTER as usize;
         true
     }
 }
