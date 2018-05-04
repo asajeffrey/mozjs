@@ -5,8 +5,10 @@
 #![allow(non_camel_case_types)]
 #![allow(non_snake_case)]
 
-use jsapi::{JSObject, JSString};
 use jsapi::jsval_layout;
+use jsapi::JSContext;
+use jsapi::JSObject;
+use jsapi::JSString;
 use jsapi::JSValueType;
 use jsapi::JS::Value;
 use jsapi::JS::TraceKind;
@@ -486,6 +488,16 @@ impl JSVal {
 
 impl Default for JSVal {
     fn default() ->JSVal { UndefinedValue() }
+}
+
+#[inline(always)]
+pub unsafe fn JS_ARGV(_cx: *mut JSContext, vp: *mut JSVal) -> *mut JSVal {
+    vp.offset(2)
+}
+
+#[inline(always)]
+pub unsafe fn JS_CALLEE(_cx: *mut JSContext, vp: *mut JSVal) -> JSVal {
+    *vp
 }
 
 // These tests make sure that the Rust definitions agree with the C++ definitions.
