@@ -191,11 +191,14 @@ const WHITELIST_TYPES: &'static [&'static str] = &[
 /// Global variables we want to generate bindings to.
 const WHITELIST_VARS: &'static [&'static str] = &[
     "JS::NullHandleValue",
+    "JS::TrueHandleValue",
     "JS::UndefinedHandleValue",
     "JSCLASS_.*",
+    "JSFUN_.*",
     "JSITER_.*",
     "JSID_VOID",
     "JSPROP_.*",
+    "JS_.*",
 ];
 
 /// Functions we want to generate bindings to.
@@ -205,6 +208,7 @@ const WHITELIST_FUNCTIONS: &'static [&'static str] = &[
     "JS::.*",
     "js::.*",
     "JS_.*",
+    ".*_TO_JSID",
 ];
 
 /// Types that should be treated as an opaque blob of bytes whenever they show
