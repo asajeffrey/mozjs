@@ -6,6 +6,7 @@ mod jsglue;
 
 // Modules with public definitions
 pub mod jsgc;
+pub mod jsjit;
 pub mod jsval;
 
 // Reexport the bindings in the jsapi module
