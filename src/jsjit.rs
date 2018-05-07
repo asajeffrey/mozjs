@@ -10,6 +10,7 @@ use std::os::raw::c_void;
 
 /// This struct contains metadata passed from the DOM to the JS Engine for JIT optimizations on DOM property accessors.
 #[repr(C)]
+#[allow(non_snake_case)]
 #[derive(Debug, Copy, Clone)]
 pub struct JSJitInfo {
     pub call: *const c_void,
