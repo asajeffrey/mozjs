@@ -78,14 +78,21 @@ fn build_jsapi() {
 
 fn build_jsglue() {
     let out = PathBuf::from(env::var("OUT_DIR").unwrap());
-        
-    cc::Build::new()
-        .flag("-std=c++11")
-        .flag("-Wno-unused-parameter")
-        .flag("-Wno-invalid-offsetof")
+
+    let mut build = cc::Build::new();
+
+    build.flag_if_supported("-std=c++11")
+        .flag_if_supported("-Wno-unused-parameter")
+        .flag_if_supported("-Wno-invalid-offsetof")
         .file("src/jsglue.cpp")
-        .include(out.join("dist/include"))
-        .compile("jsglue");
+        .define("STATIC_JS_API", "")
+        .include(out.join("dist/include"));
+
+    if cfg!(windows) {
+	build.define("WIN32", "");
+    }
+
+    build.compile("jsglue");
 
     println!("cargo:rerun-if-changed=src/jsglue.cpp");
 }
